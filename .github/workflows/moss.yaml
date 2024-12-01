@@ -83,10 +83,4 @@ jobs:
           esac
           
           # Run MOSS and save output to a file
-          ./scripts/moss -l ${{ inputs.language }} -d submissions/**/$pattern > moss_results.txt
-          
-      - name: Upload results
-        uses: actions/upload-artifact@v4
-        with:
-          name: moss-results
-          path: moss_results.txt
+          ./scripts/moss -l ${{ inputs.language }} -d submissions/**/$pattern
