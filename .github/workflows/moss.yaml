@@ -52,11 +52,12 @@ jobs:
           mkdir submissions
           cd submissions
           
-          # List repositories and clone each one
           for repo in $(gh repo list ${{ inputs.assignment_org }} --json nameWithOwner --jq ".[].nameWithOwner" --limit 1000 | grep "${{inputs.assignment_org}}/${{ inputs.repo_pattern }}"); do
             echo "Cloning $repo"
             git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$repo.git"
           done
+
+          ls -la submissions
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
