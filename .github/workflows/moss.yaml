@@ -53,17 +53,15 @@ jobs:
           cd submissions
           
           # List repositories and clone each one
-          for repo in $(gh repo list ${{ inputs.assignment_org }} --json name --jq ".[].name" --limit 1000 | grep "${{ inputs.repo_pattern }}"); do
-            echo "Cloning ${{ github.repository_owner }}/$repo"
-            git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/$repo.git"
+          for repo in $(gh repo list ${{ inputs.assignment_org }} --json nameWithOwner --jq ".[].nameWithOwner" --limit 1000 | grep "${{inputs.assignment_org}}/${{ inputs.repo_pattern }}"); do
+            echo "Cloning $repo"
+            git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$repo.git"
           done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Run MOSS checker
         run: |
-          # Assuming your submissions are in directories named after the repositories
-          # Adjust the file pattern based on the language selected
           case "${{ inputs.language }}" in
             "python")
               pattern="*.py"
@@ -83,7 +81,7 @@ jobs:
           esac
           
           # Run MOSS and save output to a file
-          ./moss -l ${{ inputs.language }} -d submissions/**/$pattern > moss_results.txt
+          ./scripts/moss -l ${{ inputs.language }} -d submissions/**/$pattern > moss_results.txt
           
       - name: Upload results
         uses: actions/upload-artifact@v4
