@@ -72,10 +72,10 @@ jobs:
               pattern="*.java"
               ;;
             "cc")
-              pattern="*.cpp *.h *.c *.hpp"
+              pattern="*.cpp"
               ;;
             "c")
-              pattern="*.c *.h"
+              pattern="*.c"
               ;;
             "javascript")
               pattern="*.js"
