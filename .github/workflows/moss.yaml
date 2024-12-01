@@ -3,6 +3,10 @@ name: Plagiarism Check with MOSS
 on:
   workflow_dispatch:
     inputs:
+      assignment_org:
+        description: 'Name of GH organization to scan'
+        required: true
+        default: VY-Assignments
       repo_pattern:
         description: 'Repository name pattern to check (regex)'
         required: true
@@ -43,15 +47,16 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           
-      - name: Get repository list
-        id: repo-list
+      - name: Get repository list and clone repositories
         run: |
-          # Using GitHub CLI to get repository list
-          repos=$(gh repo list ${{ github.repository_owner }} \
-            --json nameWithOwner \
-            --jq '.[] | select(.nameWithOwner | test("${{ inputs.repo_pattern }}")) | .nameWithOwner' \
-            --limit 1000)
-          echo "REPOS=$repos" >> $GITHUB_ENV
+          mkdir submissions
+          cd submissions
+          
+          # List repositories and clone each one
+          for repo in $(gh repo list ${{ inputs.assignment_org }} --json name --jq ".[].name" --limit 1000 | grep "${{ inputs.repo_pattern }}"); do
+            echo "Cloning ${{ github.repository_owner }}/$repo"
+            git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/$repo.git"
+          done
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
