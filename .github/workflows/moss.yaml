@@ -1,0 +1,95 @@
+name: Plagiarism Check with MOSS
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_pattern:
+        description: 'Repository name pattern to check (regex)'
+        required: true
+        default: 'asmt-*'
+      language:
+        description: 'Programming language to check'
+        required: true
+        default: 'c'
+        type: choice
+        options:
+          - c
+          - cc
+          - java
+          - python
+          - javascript
+
+env:
+  MOSS_USER_ID: ${{ secrets.MOSS_USER_ID }}
+
+jobs:
+  check-plagiarism:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout plagiarism checker repository
+        uses: actions/checkout@v4
+        
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y perl
+          
+      - name: Setup MOSS script
+        run: chmod +x scripts/moss
+          
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+      - name: Get repository list
+        id: repo-list
+        run: |
+          # Using GitHub CLI to get repository list
+          repos=$(gh repo list ${{ github.repository_owner }} \
+            --json nameWithOwner \
+            --jq '.[] | select(.nameWithOwner | test("${{ inputs.repo_pattern }}")) | .nameWithOwner' \
+            --limit 1000)
+          echo "REPOS=$repos" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Clone repositories
+        run: |
+          mkdir submissions
+          cd submissions
+          echo "$REPOS" | while read repo; do
+            git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$repo.git"
+          done
+          
+      - name: Run MOSS checker
+        run: |
+          # Assuming your submissions are in directories named after the repositories
+          # Adjust the file pattern based on the language selected
+          case "${{ inputs.language }}" in
+            "python")
+              pattern="*.py"
+              ;;
+            "java")
+              pattern="*.java"
+              ;;
+            "cc")
+              pattern="*.cpp *.h *.c *.hpp"
+              ;;
+            "c")
+              pattern="*.c *.h"
+              ;;
+            "javascript")
+              pattern="*.js"
+              ;;
+          esac
+          
+          # Run MOSS and save output to a file
+          ./moss -l ${{ inputs.language }} -d submissions/**/$pattern > moss_results.txt
+          
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: moss-results
+          path: moss_results.txt
