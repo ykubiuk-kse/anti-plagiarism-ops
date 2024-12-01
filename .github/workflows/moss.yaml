@@ -60,14 +60,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Clone repositories
-        run: |
-          mkdir submissions
-          cd submissions
-          echo "$REPOS" | while read repo; do
-            git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$repo.git"
-          done
-          
       - name: Run MOSS checker
         run: |
           # Assuming your submissions are in directories named after the repositories
