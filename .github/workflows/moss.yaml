@@ -48,6 +48,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
             
       - name: Debug - List repos
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           echo "All repos found:"
           gh repo list ${{ inputs.assignment_org }} --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | tee repos.txt
