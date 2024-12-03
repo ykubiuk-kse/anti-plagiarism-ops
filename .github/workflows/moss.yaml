@@ -49,12 +49,15 @@ jobs:
           
       - name: Authenticate with Github CLI
         run: |
-          gh auth login --with-token <<< "${{ secrets.GH_TOKEN }}"
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Debug - List repos
         run: |
+          echo "Auth status:"
+          gh auth status
+
           echo "All repos found:"
           gh repo list ${{ inputs.assignment_org }} --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | tee repos.txt
           echo "Total repos found: $(cat repos.txt | wc -l)"
@@ -81,8 +84,6 @@ jobs:
           echo "Successfully cloned repositories:"
           ls -la
           cd ..
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           
       - name: Run MOSS checker
         run: |
