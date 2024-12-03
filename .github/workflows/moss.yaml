@@ -49,9 +49,6 @@ jobs:
             
       - name: Debug - List repos
         run: |
-          echo "Auth status:"
-          gh auth status
-
           echo "All repos found:"
           gh repo list ${{ inputs.assignment_org }} --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | tee repos.txt
           echo "Total repos found: $(cat repos.txt | wc -l)"
