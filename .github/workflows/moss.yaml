@@ -50,7 +50,20 @@ jobs:
       - name: Authenticate with Github CLI
         run: |
           gh auth login --with-token <<< "${{ secrets.GH_TOKEN }}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        
+      - name: Debug - List repos
+        run: |
+          echo "All repos found:"
+          gh repo list ${{ inputs.assignment_org }} --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | tee repos.txt
+          echo "Total repos found: $(cat repos.txt | wc -l)"
           
+          echo "Repos after filter:"
+          gh repo list ${{ inputs.assignment_org }} --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | \
+          grep -E ${{ inputs.repo_pattern }} | tee filtered-repos.txt
+          echo "Total repos to clone: $(cat filtered-repos.txt | wc -l)"
+
       - name: Get repository list and clone repositories
         run: |
           mkdir submissions
@@ -65,9 +78,11 @@ jobs:
               fi
           done
 
+          echo "Successfully cloned repositories:"
+          ls -la
           cd ..
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           
       - name: Run MOSS checker
         run: |
