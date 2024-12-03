@@ -51,14 +51,17 @@ jobs:
         run: |
           mkdir submissions
           cd submissions
-          
-          for repo in $(gh repo list ${{ inputs.assignment_org }} --json nameWithOwner --jq ".[].nameWithOwner" --limit 1000 | grep "${{inputs.assignment_org}}/${{ inputs.repo_pattern }}"); do
-            echo "Cloning $repo"
-            git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$repo.git"
+
+          gh repo list ${{ inputs.assignment_org }} --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | \
+          grep -E ${{ inputs.repo_pattern }} | \
+          while read -r repo; do
+              if [ ! -z "$repo" ]; then
+                  echo "Cloning $repo..."
+                  gh repo clone "$repo" || echo "Failed to clone $repo"
+              fi
           done
 
           cd ..
-          ls -la submissions
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
