@@ -59,6 +59,8 @@ jobs:
           echo "Total repos to clone: $(cat filtered-repos.txt | wc -l)"
 
       - name: Get repository list and clone repositories
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir submissions
           cd submissions
