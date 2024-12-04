@@ -286,8 +286,18 @@ die "Could not connect to server $server: $!\n" unless $sock;
 $sock->autoflush(1);
 
 sub read_from_server {
-    $msg = <$sock>;
-    print $msg;
+    my $select = IO::Select->new($sock);
+    my $timeout = 3600; # 1h timeout
+    
+    while (1) {
+        if ($select->can_read($timeout)) {
+            $msg = <$sock>;
+            last unless defined $msg;
+            print $msg;
+        } else {
+            die "Timeout waiting for server response\n";
+        }
+    }
 }
 
 sub upload_file {
