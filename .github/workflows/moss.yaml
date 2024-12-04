@@ -84,21 +84,21 @@ jobs:
         run: |
           case "${{ inputs.language }}" in
             "python")
-              pattern="*.py"
+              pattern="submissions/*/*.py"
               ;;
             "java")
-              pattern="*.java"
+              pattern="submissions/*/*.java"
               ;;
             "cc")
-              pattern="*.cpp"
+              pattern="submissions/*/*.cpp submissions/*/.h"
               ;;
             "c")
-              pattern="*.c"
+              pattern="submissions/*/*.c submissions/*/*.h"
               ;;
             "javascript")
-              pattern="*.js"
+              pattern="submissions/*/*.js"
               ;;
           esac
           
           # Run MOSS and save output to a file
-          ./scripts/moss -l ${{ inputs.language }} -d submissions/**/$pattern
+          ./scripts/moss -l ${{ inputs.language }} -d $pattern
