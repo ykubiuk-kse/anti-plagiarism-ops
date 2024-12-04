@@ -14,7 +14,7 @@ on:
       language:
         description: 'Programming language to check'
         required: true
-        default: 'c'
+        default: 'cc'
         type: choice
         options:
           - cc
