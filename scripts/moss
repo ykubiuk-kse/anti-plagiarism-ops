@@ -149,7 +149,6 @@
 # to use the script.
 #
 use IO::Socket;
-use Time::HiRes qw(sleep);
 
 #
 # As of the date this script was written, the following languages were supported.  This script will work with
@@ -287,27 +286,8 @@ die "Could not connect to server $server: $!\n" unless $sock;
 $sock->autoflush(1);
 
 sub read_from_server {
-    my $response = '';
-    my $attempts = 0;
-    my $max_attempts = 60; # 5 minutes total
-    
-    while ($attempts < $max_attempts) {
-        while (defined(my $line = <$sock>)) {
-            $response .= $line;
-            print $line;
-            
-            # Check for completion indicators
-            if ($line =~ /http:\/\/moss\.stanford\.edu\/results/ ||
-                $line =~ /No files uploaded to compare/ ||
-                $line =~ /Query submitted/i) {
-                return;
-            }
-        }
-        sleep(5);
-        $attempts++;
-    }
-    
-    die "Timeout waiting for complete response\n";
+    $msg = <$sock>;
+    print $msg;
 }
 
 sub upload_file {
