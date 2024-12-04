@@ -49,7 +49,7 @@ jobs:
             
       - name: Debug - List repos
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "All repos found:"
           gh repo list ${{ inputs.assignment_org }} --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | tee repos.txt
@@ -62,7 +62,7 @@ jobs:
 
       - name: Get repository list and clone repositories
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir submissions
           cd submissions
