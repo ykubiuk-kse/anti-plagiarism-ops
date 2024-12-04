@@ -16,22 +16,21 @@ Automated plagiarism detection system for student assignments using MOSS (Measur
 4. Configure GitHub Secrets:
 
    Settings > Secrets and variables > Actions > New repository secret:
-   Add MOSS user ID: 
-   ```
-   Name: MOSS_USER_ID
-   Value: your_moss_id
-   ```
-   Add GitHub personal token
-
-   Note: make sure it has right permissions:
-
-   * workflow
-   * read:org
+   
+   1. Add MOSS user ID: 
+    ```
+    Name: MOSS_USER_ID
+    Value: your_moss_id
+    ```
+   2. Add GitHub personal token
 
    ```
    Name: TOKEN
    Value: your_gh_token
    ```
+    _Note: make sure GH token has right permissions_:
+    * _workflow_
+    * _read:org_
 
 ## Usage
 
