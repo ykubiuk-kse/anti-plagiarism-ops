@@ -149,6 +149,7 @@
 # to use the script.
 #
 use IO::Socket;
+use Time::HiRes qw(sleep);
 
 #
 # As of the date this script was written, the following languages were supported.  This script will work with
@@ -285,11 +286,28 @@ $sock = new IO::Socket::INET (
 die "Could not connect to server $server: $!\n" unless $sock;
 $sock->autoflush(1);
 
-my @output_buffer;
-
 sub read_from_server {
-    $msg = <$sock>;
-    push @output_buffer, $msg;
+    my $response = '';
+    my $attempts = 0;
+    my $max_attempts = 60; # 5 minutes total
+    
+    while ($attempts < $max_attempts) {
+        while (defined(my $line = <$sock>)) {
+            $response .= $line;
+            print $line;
+            
+            # Check for completion indicators
+            if ($line =~ /http:\/\/moss\.stanford\.edu\/results/ ||
+                $line =~ /No files uploaded to compare/ ||
+                $line =~ /Query submitted/i) {
+                return;
+            }
+        }
+        sleep(5);
+        $attempts++;
+    }
+    
+    die "Timeout waiting for complete response\n";
 }
 
 sub upload_file {
@@ -350,5 +368,4 @@ print $sock "query 0 $opt_c\n";
 print "Query submitted.  Waiting for the server's response.\n";
 &read_from_server();
 print $sock "end\n";
-print join('', @output_buffer);
 close($sock);
