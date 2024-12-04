@@ -285,19 +285,11 @@ $sock = new IO::Socket::INET (
 die "Could not connect to server $server: $!\n" unless $sock;
 $sock->autoflush(1);
 
+my @output_buffer;
+
 sub read_from_server {
-    my $select = IO::Select->new($sock);
-    my $timeout = 3600; # 1h timeout
-    
-    while (1) {
-        if ($select->can_read($timeout)) {
-            $msg = <$sock>;
-            last unless defined $msg;
-            print $msg;
-        } else {
-            die "Timeout waiting for server response\n";
-        }
-    }
+    $msg = <$sock>;
+    push @output_buffer, $msg;
 }
 
 sub upload_file {
@@ -358,4 +350,5 @@ print $sock "query 0 $opt_c\n";
 print "Query submitted.  Waiting for the server's response.\n";
 &read_from_server();
 print $sock "end\n";
+print join('', @output_buffer);
 close($sock);
