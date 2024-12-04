@@ -90,7 +90,7 @@ jobs:
               pattern="submissions/*/*.java"
               ;;
             "cc")
-              pattern="submissions/*/*.cpp submissions/*/.h"
+              pattern="submissions/*/*.cpp submissions/*/*.h"
               ;;
             "c")
               pattern="submissions/*/*.c submissions/*/*.h"
