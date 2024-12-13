@@ -25,7 +25,7 @@ on:
       exclude_filter:
         description: 'Patterns to exclude from file search'
         required: false
-        default: 'cmake-build-debug,SFML'
+        default: 'cmake-build-debug,SFML,CMakeFiles'
 
 env:
   MOSS_USER_ID: ${{ secrets.MOSS_USER_ID }}
