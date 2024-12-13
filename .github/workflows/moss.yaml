@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y perl
+          sudo apt-get install python3
           
       - name: Setup MOSS script
         run: chmod +x scripts/moss
@@ -79,26 +79,11 @@ jobs:
           echo "Successfully cloned repositories:"
           ls -la
           cd ..
-          
-      - name: Run MOSS checker
+      - name: Install Python dependencies
         run: |
-          case "${{ inputs.language }}" in
-            "python")
-              pattern="submissions/*/*.py"
-              ;;
-            "java")
-              pattern="submissions/*/*.java"
-              ;;
-            "cc")
-              pattern="submissions/*/*.cpp submissions/*/*.h"
-              ;;
-            "c")
-              pattern="submissions/*/*.c submissions/*/*.h"
-              ;;
-            "javascript")
-              pattern="submissions/*/*.js"
-              ;;
-          esac
-          
-          # Run MOSS and save output to a file
-          ./scripts/moss -l ${{ inputs.language }} -d $pattern
+          python3 -m pip install --upgrade pip
+          pip3 install mosspy==1.0.9
+        continue-on-error: false
+      - name: Run MOSS check
+        run: |
+          python3 ./scripts/moss.py --submission_folder=./submissions --language=${{ inputs.language }}
