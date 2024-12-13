@@ -55,6 +55,8 @@ print("Using language: {}".format(language))
 
 m = mosspy.Moss(userid, language)
 
+m.setIgnoreLimit(100000)
+
 for file in files:
     try:
         print(file)
