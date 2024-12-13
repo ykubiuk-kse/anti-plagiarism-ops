@@ -41,6 +41,7 @@ Automated plagiarism detection system for student assignments using MOSS (Measur
    - `assignment_org`: name of GH organization where student assignments are located
    - `repo_pattern`: Regex pattern matching student repositories (e.g., `assignment-*`)
    - `language`: Programming language to check
+   - `exclude_filter`: Patterns to exclude from file search (e.g., `SFML,CMakeFiles`)
 5. Click "Run workflow"
 
 URL with scan results will be printed at the end of `Run MOSS chacker` step
@@ -52,6 +53,6 @@ URL with scan results will be printed at the end of `Run MOSS chacker` step
 │   └── workflows
 │       └── moss.yml
 ├── scripts
-│   └── moss
+│   └── moss.py
 └── README.md
 ```
