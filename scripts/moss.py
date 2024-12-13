@@ -55,8 +55,12 @@ print("Using language: {}".format(language))
 m = mosspy.Moss(userid, language)
 
 for file in files:
-    print(file)
-    m.addFile(file)
+    try:
+        print(file)
+        m.addFile(file)
+    except Exception as e:
+        print(f"Skipping file {file}: {str(e)}")
+        continue
 
 url = m.send(lambda file_path, display_name: print("*", end="", flush=True))
 print()
