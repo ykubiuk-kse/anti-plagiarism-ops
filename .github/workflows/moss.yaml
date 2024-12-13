@@ -91,4 +91,4 @@ jobs:
           cd ..
       - name: Run MOSS check
         run: |
-          python3 ./scripts/moss.py --submissions_folder=./submissions --language=${{ inputs.language }} --exclude "${{ inputs.exclude_filter }}
+          python3 ./scripts/moss.py --submissions_folder=./submissions --language=${{ inputs.language }} --exclude=${{ inputs.exclude_filter }}
