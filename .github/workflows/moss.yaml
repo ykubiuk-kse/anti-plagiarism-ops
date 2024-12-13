@@ -86,4 +86,4 @@ jobs:
         continue-on-error: false
       - name: Run MOSS check
         run: |
-          python3 ./scripts/moss.py --submission_folder=./submissions --language=${{ inputs.language }}
+          python3 ./scripts/moss.py --submissions_folder=./submissions --language=${{ inputs.language }}
