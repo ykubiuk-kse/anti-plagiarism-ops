@@ -22,6 +22,10 @@ on:
           - java
           - python
           - javascript
+      exclude_filter:
+        description: 'Patterns to exclude from file search'
+        required: false
+        default: 'cmake-build-debug,SFML'
 
 env:
   MOSS_USER_ID: ${{ secrets.MOSS_USER_ID }}
@@ -46,7 +50,7 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          
+
       - name: Install Python dependencies
         run: |
           python3 -m pip install --upgrade pip
@@ -87,4 +91,4 @@ jobs:
           cd ..
       - name: Run MOSS check
         run: |
-          python3 ./scripts/moss.py --submissions_folder=./submissions --language=${{ inputs.language }}
+          python3 ./scripts/moss.py --submissions_folder=./submissions --language=${{ inputs.language }} --exclude "${{ inputs.exclude_filter }}

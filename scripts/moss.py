@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser(description="Description of your script")
 
 parser.add_argument("--language", type=str, default="cc")
 parser.add_argument("--submissions_folder", type=str)
+parser.add_argument('--exclude', type=str)
 
 args = parser.parse_args()
 
@@ -47,8 +48,8 @@ userid = os.getenv("MOSS_USER_ID")
 language = args.language
 submissions_folder = args.submissions_folder
 
-exclude = ['cmake-build-debug/CMakeFiles/']
-files = find_files(submissions_folder, get_file_extensions(language=language), exclude_patterns=exclude)
+exclude_patterns = args.exclude.split(',')
+files = find_files(submissions_folder, get_file_extensions(language=language), exclude_patterns=exclude_patterns)
 
 print("Using language: {}".format(language))
 
